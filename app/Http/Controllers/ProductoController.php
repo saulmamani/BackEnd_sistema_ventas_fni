@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Producto;
+use App\Http\Requests\CreateProductoRequest;
+use App\Http\Requests\UpdateProductoRequest;
 
 class ProductoController extends Controller
 {
@@ -34,9 +36,15 @@ class ProductoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    //insertar nuevos regisros
+    public function store(CreateProductoRequest $request)
     {
-        //
+        //insert into productos values (...........$request)
+        $input = $request->all();
+        $input['user_id'] = 1; //usuarios autenticado
+        $producto = Producto::create($input);     
+        
+        return \response()->json(['res' => true, 'message'=>'insertado correctamente'], 200);
     }
 
     /**
@@ -49,7 +57,7 @@ class ProductoController extends Controller
     public function show($id)
     {
         //select * from producto where id = $id
-        $producto = Producto::with(['user:id,email,name'])->find($id);
+        $producto = Producto::with(['user:id,email,name'])->findOrFail($id);
         return \response()->json($producto, 200);
     }
 
@@ -60,9 +68,15 @@ class ProductoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    //para modificar registros
+    public function update(UpdateProductoRequest $request, $id)
     {
-        //
+        //update productos set nombre = $request......... where id = $id
+        $input = $request->all();
+        $producto = Producto::find($id);
+        $producto->update($input);
+
+        return \response()->json(['res' => true, 'message'=>'modificado correctamente'], 200);
     }
 
     /**
@@ -83,5 +97,22 @@ class ProductoController extends Controller
         catch(\Exception $e){
             return \response()->json(['res' => false, 'message'=>$e->getMessage()], 200);
         }
+    }
+
+    //incrementar likes de productos
+    public function setLike($id){
+        $producto = Producto::find($id);
+        $producto->like = $producto->like + 1;
+        $producto->save();
+
+        return \response()->json(['res' => true, 'message'=>'mas un like'], 200);
+    }
+
+    public function setDislike($id){
+        $producto = Producto::find($id);
+        $producto->dislike = $producto->dislike + 1;
+        $producto->save();
+
+        return \response()->json(['res' => true, 'message'=>'mas like menos'], 200);
     }
 }
