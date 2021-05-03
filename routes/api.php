@@ -23,11 +23,17 @@ Route::get("/prueba", function(){
     return \App\Models\Producto::all();
 });
 
-Route::apiResource('productos', \App\Http\Controllers\ProductoController::class); //CRUD tabla pruductos
-Route::put('set_like/{producto}', [\App\Http\Controllers\ProductoController::class, 'setLike'])->name('set_like');
-Route::put('set_dislike/{producto}', [\App\Http\Controllers\ProductoController::class, 'setDislike'])->name('set_dislike');
-Route::put('set_imagen/{producto}', [\App\Http\Controllers\ProductoController::class, 'setImagen'])->name('set_imagen');
+Route::post('login', [\App\Http\Controllers\UserController::class, 'login'])->name('login');
 
+Route::group(['middleware' => 'auth:api'], function(){
+
+    Route::apiResource('productos', \App\Http\Controllers\ProductoController::class); //CRUD tabla pruductos
+    Route::put('set_like/{producto}', [\App\Http\Controllers\ProductoController::class, 'setLike'])->name('set_like');
+    Route::put('set_dislike/{producto}', [\App\Http\Controllers\ProductoController::class, 'setDislike'])->name('set_dislike');
+    Route::put('set_imagen/{producto}', [\App\Http\Controllers\ProductoController::class, 'setImagen'])->name('set_imagen');    
+
+    Route::post('logout', [\App\Http\Controllers\UserController::class, 'logout'])->name('logout');
+});
 
 // Route::get('productos', [\App\Http\Controllers\ProductoController::class, 'index']);
 // Route::get('productos/{producto}', [\App\Http\Controllers\ProductoController::class, 'show']);

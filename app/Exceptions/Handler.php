@@ -41,29 +41,28 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
+        $this->renderable(function (ModelNotFoundException $e, $request) {
+            return response()->json(["res" => false, "error" => "Error de modelo"], 400);
+        });
 
-        // if($exception instanceof ModelNotFoundException){
-        //     return response()->json(["res" => false, "error" => "Error de modelo"], 400);
-        // }
+        $this->renderable(function (HttpException $e, $request) {
+            return response()->json(["res" => false, "error" => "Error de ruta"], 404);
+        });
 
-        // if($exception instanceof QueryException){
-        //     return response()->json(["res" => false, "message" => "Error de consulta BDD " , $exception->getMessage()], 500);
-        // }
+        $this->renderable(function (QueryException $e, $request) {
+            return response()->json(["res" => false, "error" => "Error de consulta BDD"], 500);
+        });
 
-        // if($exception instanceof HttpException){
-        //     return response()->json(["res" => false, "message" => "Error de ruta"], 404);
-        // }
+        $this->renderable(function (AuthenticationException $e, $request) {
+            return response()->json(["res" => false, "error" => "Error de autenticación"], 401);
+        });
 
-        // if($exception instanceof AuthenticationException){
-        //     return response()->json(["res" => false, "message" => "Error de autenticación"], 401);
-        // }
+        $this->renderable(function (AuthorizationException $e, $request) {
+            return response()->json(["res" => false, "error" => "Error de autorización, no tiene permisos"], 403);
+        });
 
-        // if ($exception instanceof AuthorizationException) {
-        //     return response()->json(["res" => false, "message" => "Error de autorización, no tiene permisos"], 403);
-        // }
-
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->renderable(function (RouteNotFoundException $e, $request) {
+            return response()->json(["res" => false, "error" => "Error de ruta"], 404);
         });
     }
 }

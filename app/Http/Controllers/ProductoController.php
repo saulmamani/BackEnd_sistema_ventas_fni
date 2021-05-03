@@ -41,7 +41,7 @@ class ProductoController extends Controller
     {
         //insert into productos values (...........$request)
         $input = $request->all();
-        $input['user_id'] = 1; //usuarios autenticado
+        $input['user_id'] = auth()->user()->id;
         $producto = Producto::create($input);     
         
         return \response()->json(['res' => true, 'message'=>'insertado correctamente'], 200);

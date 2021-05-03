@@ -13,6 +13,7 @@ class User extends Authenticatable
 
     //
     //protected $table = "usuarios";
+    protected $table = "users";
 
     /**
      * The attributes that are mass assignable.
@@ -23,6 +24,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'api_token'
     ];
 
     /**
