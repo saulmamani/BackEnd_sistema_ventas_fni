@@ -27,6 +27,8 @@ class Producto extends Model
         "user_id"
     ];
 
+    protected $hidden = ['created_at', 'updated_at'];
+
     //relacion con la tabla users
     public function user()
     {
